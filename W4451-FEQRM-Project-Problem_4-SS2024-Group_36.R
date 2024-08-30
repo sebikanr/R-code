@@ -6,14 +6,6 @@
 #                                                                              #
 ################################################################################
 
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # Automatic adjustment of the working directory to the the directory of this script file; you may need to install the R-package "rstudioapi" first.
-
-# Information:
-
-# Use this file to save your code for solving Problem 4 of the applied project.
-
-# <--------------- Begin in the next line with your own code  ---------------> #
-
 library(readr)     
 library(dplyr)     
 library(ggplot2) 
