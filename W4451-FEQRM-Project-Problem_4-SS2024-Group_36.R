@@ -17,11 +17,11 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path)) # Automatic adjustme
 library(readr)     
 library(dplyr)     
 library(ggplot2) 
+library(ufRisk)
+library(rugarch)
 
 data <- read_csv("MSFT.csv")
 head(data)
-
-# date range
 first_date <- min(data$Date)
 last_date <- max(data$Date)
 
@@ -35,12 +35,6 @@ ggplot(data, aes(x = Date, y = Close)) +
        x = "Date",
        y = "Closing Price (USD)") +
   theme_minimal()
-
-
-
-
-
-
 
 # log-returns
 data <- data %>%
@@ -63,28 +57,12 @@ acf(data$Log_Returns, main = "ACF of Log-Returns", lag.max = 50)
 acf(data$Log_Returns^2, main = "ACF of Squared Log-Returns", lag.max = 50)
 
 
-
-
-
-
-
-
-
-
-
-library(ufRisk)
-library(rugarch)
-library(dplyr)
-
-
 data <- data %>% mutate(Log_Returns = log(Close / lag(Close))) %>% na.omit()
 
 # for 250 observations
 n_test <- 250
 train_data <- data$Log_Returns[1:(nrow(data) - n_test)]
 test_data <- data$Log_Returns[(nrow(data) - n_test + 1):nrow(data)]
-
-
 
 # Define the GARCH(1,1) model
 garch_spec <- ugarchspec(
@@ -166,18 +144,6 @@ print(garch_es_test)
 print("APARCH(1,1) ES Backtesting Results:")
 print(aparch_es_test)
 
-
-
-
-
-
-
-
-
-
-
-
-
 # Prepare data for GARCH(1,1)
 garch_test_data <- data.frame(
   Date = data$Date[(nrow(data) - n_test + 1):nrow(data)],
@@ -201,10 +167,6 @@ ggplot(garch_test_data, aes(x = as.Date(Date))) +
        x = "Date") +
   theme_minimal()
 
-
-
-
-
 # Prepare data for APARCH(1,1)
 aparch_test_data <- data.frame(
   Date = data$Date[(nrow(data) - n_test + 1):nrow(data)],
@@ -227,17 +189,6 @@ ggplot(aparch_test_data, aes(x = as.Date(Date))) +
        y = "Value",
        x = "Date") +
   theme_minimal()
-
-
-
-
-
-
-
-
-
-
-
 
 # Fit GARCH(1,1) model
 garch_spec <- ugarchspec(
